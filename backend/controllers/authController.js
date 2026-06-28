@@ -12,10 +12,18 @@ const generateToken = (id)=>{
 
 // Register User
 const registerUser = async (req , res)=>{
-  const { username , email , password } = req.body;
+  const { username, name, email, password } = req.body;
+  const displayName = username || name;
+
+  if (!displayName || !email || !password) {
+    return res.status(400).json({
+      message: 'Please provide name, email, and password',
+    });
+  }
+
   try{
-    const userExists = await User.findOne({ email });
-    if(userExists){
+    const existingUser = await User.findOne({ email });
+    if(existingUser){
       return res.status(400).json({ message: "User already exists" });
     }
     //TODO: Hash the password before saving to the database
@@ -23,12 +31,12 @@ const registerUser = async (req , res)=>{
     //TODO: OTP verification for email confirmation
     //TODO: WELCOME EMAIL TO USER AFTER REGISTRATION
     
-    
+     
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password , salt);
 
       const user = await User.create({
-        username,
+          username: name || username,
         email,
         password: hashedPassword
       });
@@ -39,13 +47,16 @@ const registerUser = async (req , res)=>{
         const message = `
           Welcome to Anvexa , ${user.username}! Thank you for registering with us. We are excited to have you on board.
           Your OTP for email verification is: ${otp}`;
-         
-          await sendEmail({
-            to: user.email,
-            subject: "Welcome to Anvexa - Email Verification",
-            text: message
-          });
-
+          try {
+            await sendEmail(
+              user.email,
+              "Welcome to Anvexa - Your OTP for Email Verification",
+              message
+            );
+          } catch (emailError) {
+            console.error("Error sending registration email:", emailError.message);
+          }
+          //Token generation and response
           res.status(201).json({
             _id: user._id,
             username: user.username,
@@ -58,13 +69,20 @@ const registerUser = async (req , res)=>{
         }
 
   }catch(error){
-    res.status(500).json({ message: "Server error" });
+        if (error.name === 'ValidationError') {
+          return res.status(400).json({
+            message: error.message,
+          });
+        }
+
+        console.error('Register user failed:', error);
+        res.status(500).json({ message: "Server error" });
   }
 }
 
 
 // Login User
-const loginUser = async (req , res)=>{
+const  loginUser = async (req , res)=>{
   const { email , password } = req.body;
   try{
     const user = await User.findOne({ email });
@@ -87,7 +105,7 @@ const loginUser = async (req , res)=>{
 // Get Users
 const getUsers = async (req , res)=>{
   try{
-    const users = await User.find().select('-password');
+    const users = await User.find({}).select('-password');// Exclude password field from the response
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
