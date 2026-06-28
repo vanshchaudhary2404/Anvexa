@@ -8,4 +8,6 @@ router.post("/register" , registerUser);
 router.post("/login" , loginUser);
 router.get("/users" ,  protect, admin, getUsers); //protect -> check if user is authenticated , admin -> check if user is admin
 
+// //OTP
+
 module.exports = router;
