@@ -1,0 +1,23 @@
+{
+  "name": "anvexa-full-stack",
+  "version": "1.0.0",
+  "description": "Anvexa is a modern Full-Stack E-Commerce SaaS Platform built using the MERN Stack. It provides a complete online shopping ecosystem with secure authentication, product management, order processing, payment integration, analytics, cloud media storage, and role-based administration.",
+  "main": "index.js",
+  "scripts": {
+    "install": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:server": "cd backend && npm run dev",
+    "dev:client": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build": "cd frontend && npm run build"
+  },
+  "keywords": [
+    "vansh",
+    "microservice"
+  ],
+  "author": "vansh",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "concurrently": "^9.2.3"
+  }
+}
