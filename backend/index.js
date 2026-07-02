@@ -7,7 +7,12 @@ dotenv.config();
 connectDB();
 
 const app = express();
-app.use(cors());
+app.use(cors(
+  {
+    origin: ["http://localhost:3000", 'http://127.0.0.1:3000'], // replace with your frontend URL
+    credentials: true, // allow credentials (cookies, authorization headers, etc.)
+  }
+));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
