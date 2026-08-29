@@ -14,6 +14,7 @@ import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
 import Shop from './pages/Shop';
 import Profile from './pages/Profile';
+import VerifyOTP from './pages/VerifyOTP';
 import AdminDashboard from './admin/AdminDashboard';
 import AdminUsers from './admin/AdminUsers';
 import AdminProducts from './admin/AdminProducts';
@@ -49,6 +50,7 @@ const App = () => {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/verify-otp" element={<VerifyOTP />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/ordersuccess" element={<OrderSuccess />} />
             <Route path="/about" element={<About />} />

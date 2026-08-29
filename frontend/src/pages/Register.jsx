@@ -13,21 +13,31 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-      const res = await fetch('/api/auth/register' , {
+    try {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name , email , password })
+        body: JSON.stringify({ name, email, password }),
       });
+
       const data = await res.json();
-      if(res.ok){
-        login(data);
-        navigate('/');
-      }else{
-        toast.error(data.message || 'Registration failed');
+
+      if (res.ok) {
+        if (data.token) {
+          login(data);
+          toast.success(data.message || 'Registration successful');
+          navigate('/');
+          return;
+        }
+
+        toast.success(data.message || 'Registration successful');
+        navigate('/verify-otp', { state: { email } });
+        return;
       }
+
+      toast.error(data.message || 'Registration failed');
     } catch (error) {
       console.error('Error during registration:', error);
       toast.error('An error occurred during registration');
