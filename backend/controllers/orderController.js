@@ -31,7 +31,9 @@ const createOrder = async (req, res) => {
 //get request my orders 
 const myOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id }).populate('items.productId', 'name price');
+    const orders = await Order.find({ user: req.user._id })
+      .populate('items.productId', 'name price')
+      .sort({ createdAt: -1 });
     res.status(200).json(orders);
   } catch (error) {
     res.status(400).json({ message: error.message });

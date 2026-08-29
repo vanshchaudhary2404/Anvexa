@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser , loginUser , getUsers } = require('../controllers/authController');
+const { registerUser , loginUser , verifyOTP  ,getUsers } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 const { admin } = require('../middleware/adminMiddleware');
 
@@ -9,5 +9,7 @@ router.post("/login" , loginUser);
 router.get("/users" ,  protect, admin, getUsers); //protect -> check if user is authenticated , admin -> check if user is admin
 
 // //OTP
+router.post("/verify-otp" , verifyOTP);
+
 
 module.exports = router;
