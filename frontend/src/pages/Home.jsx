@@ -31,8 +31,10 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="hero-banner">
-        <h1>Welcome to Anvexa</h1>
-        <p>Discover the best products, Discover More, Shop Smarter.</p>
+        <div className="hero-copy">
+          <h1>Welcome to Anvexa</h1>
+          <p>Discover the best products, Discover More, Shop Smarter.</p>
+        </div>
       </div>
 
       <div className="product-header-row">
