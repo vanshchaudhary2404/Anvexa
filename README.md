@@ -1,4 +1,4 @@
-#✨ Anvexa
+# ✨ Anvexa
 
 Anvexa is a modern full-stack e-commerce platform built with the MERN stack. It allows customers to browse products, add items to the cart, place orders, and manage their profile, while admins can manage products, users, orders, and sales data from a dashboard.
 
