@@ -1,25 +1,35 @@
-import {React , useState , useEffect } from 'react';
-import { useParams , Link } from 'react-router-dom';
-import {useDispatch } from 'react-redux';
+import { React, useState, useEffect, useMemo } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { addToCart } from '../redux/cartSlice';
+import ProductCard from '../components/ProductCard';
 import '../styles/product.css';
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const [product , setProduct] = useState(null);
-  const [loading , setLoading] = useState(true);
+  const [product, setProduct] = useState(null);
+  const [allProducts, setAllProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchProduct = async () => {
-      try{
-        const res = await fetch(`/api/products/${id}`);
-        if(!res.ok){
+      try {
+        const [productRes, productsRes] = await Promise.all([
+          fetch(`/api/products/${id}`),
+          fetch('/api/products')
+        ]);
+
+        if (!productRes.ok) {
           throw new Error('Failed to fetch product');
         }
-        const data = await res.json();
-        setProduct(data);
+
+        const productData = await productRes.json();
+        const productsData = await productsRes.json();
+
+        setProduct(productData);
+        setAllProducts(productsData);
       } catch (error) {
         console.error('Error fetching product:', error);
         toast.error('Failed to fetch product');
@@ -31,8 +41,22 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id]);
 
+  const recommendations = useMemo(() => {
+    if (!product || !allProducts.length) return [];
+
+    const sameCategory = allProducts.filter(
+      (item) => item.category === product.category && item._id !== product._id
+    );
+
+    if (sameCategory.length > 0) {
+      return sameCategory.slice(0, 4);
+    }
+
+    return allProducts.filter((item) => item._id !== product._id).slice(0, 4);
+  }, [allProducts, product]);
+
   const handleAddToCart = () => {
-    if(product){
+    if (product) {
       dispatch(addToCart({
         _id: product._id,
         name: product.name,
@@ -40,7 +64,7 @@ const ProductDetail = () => {
         imageUrl: product.imageUrl,
         qty: 1
       }));
-      
+
       toast.success('🎉 Product successfully added to cart 🛒!');
     }
   };
@@ -48,7 +72,7 @@ const ProductDetail = () => {
   if (loading) return <div style={{ textAlign: 'center', margin: '100px', color: '#f97316' }}>Loading Product...</div>;
   if (!product) return <div style={{ textAlign: 'center', margin: '100px', color: '#ef4444' }}>Product Not Found</div>;
 
-  return(
+  return (
     <div className="product-detail-wrapper" style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
       
       {/* Breadcrumb Navigation */}
@@ -64,7 +88,6 @@ const ProductDetail = () => {
 
         {/* Right Side: Information Block */}
         <div className="detail-info">
-          
           <h2 style={{ fontSize: '2.8rem', marginBottom: '10px' }}>{product.name}</h2>
 
           <p className="detail-price" style={{ fontSize: '2.5rem', margin: '15px 0' }}>₹{product.price.toFixed(2)}</p>
@@ -81,15 +104,25 @@ const ProductDetail = () => {
               Add to Shopping Cart
             </button>
           </div>
-          
+
           <p style={{ marginTop: '20px', color: product.stock > 0 ? '#10b981' : '#ef4444', fontWeight: '600' }}>
             {product.stock > 0 ? `● In Stock (${product.stock} units available)` : `● Temporarily Out of Stock`}
           </p>
-
         </div>
       </div>
+
+      {recommendations.length > 0 && (
+        <div className="recommendation-section">
+          <h3 className="recommendation-title">You may also like</h3>
+          <div className="product-grid recommendation-grid">
+            {recommendations.map((recommendedProduct) => (
+              <ProductCard key={recommendedProduct._id} product={recommendedProduct} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default ProductDetail;

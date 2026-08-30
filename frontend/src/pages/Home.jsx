@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ProductCard from '../components/ProductCard';
 import '../styles/product.css';
 
@@ -27,6 +27,22 @@ const Home = () => {
     selectedCategory === 'All'
       ? allProducts
       : allProducts.filter((product) => product.category === selectedCategory);
+
+  const recommendations = useMemo(() => {
+    if (!allProducts.length) return [];
+
+    const baseCategory = selectedCategory === 'All' ? allProducts[0].category : selectedCategory;
+
+    const categoryMatches = allProducts.filter(
+      (product) => product.category === baseCategory
+    );
+
+    if (categoryMatches.length > 0) {
+      return categoryMatches.slice(0, 4);
+    }
+
+    return allProducts.slice(0, 4);
+  }, [allProducts, selectedCategory]);
 
   return (
     <div className="home-container">
@@ -64,6 +80,17 @@ const Home = () => {
           {filteredProducts.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
+        </div>
+      )}
+
+      {!loading && recommendations.length > 0 && (
+        <div className="recommendation-section">
+          <h3 className="recommendation-title">Recommended for you</h3>
+          <div className="product-grid recommendation-grid">
+            {recommendations.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
         </div>
       )}
     </div>
