@@ -388,6 +388,6 @@ This gives you a clean roadmap that feels practical and resume-friendly.
 
 - Frontend: React, Redux Toolkit
 - Backend: Node.js, Express.js, MongoDB
-- AI Helpers: OpenAI API, Python scripts, lightweight NLP models
+- AI Helpers: Olama model, Python scripts, lightweight NLP models
 - Analytics: Charting library, MongoDB aggregation queries
-- Optional: Redis for fast recommendation caching -->
+- Optional: Redis for fast recommendation caching. -->
