@@ -21,6 +21,7 @@ import AdminProducts from './admin/AdminProducts';
 import AddProduct from './admin/AddProduct';
 import EditProduct from './admin/EditProduct';
 import AdminOrders from './admin/AdminOrders';
+import FAQChatbot from './components/FAQChatbot';
 import './styles/global.css';
 
 const ScrollToTop = () => {
@@ -65,6 +66,7 @@ const App = () => {
           </Routes>
         </main>
 
+        <FAQChatbot />
         <Footer />
       </div>
     </BrowserRouter>
